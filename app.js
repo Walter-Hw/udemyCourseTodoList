@@ -9,31 +9,13 @@ app.set('view engine', 'ejs');
 app.get('/', (req, res) => {
 
   let today = new Date();
-  let day = '';
-  let currentDay = today.getDay();
-
-  if (currentDay === 0) {
-    day = 'Sunday';
-  }
-  if (currentDay === 1) {
-    day = 'Monday';
-  }
-  if (currentDay === 2) {
-    day = 'Tuesday';
-  }
-  if (currentDay === 3) {
-    day = 'Wednesday';
-  }
-  if (currentDay === 4) {
-    day = 'Thursday';
-  }
-  if (currentDay === 5) {
-    day = 'Friday';
-  }
-  if (currentDay === 6) {
-    day = 'Saturday';
+  let options = {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long'
   }
 
+  let day = today.toLocaleDateString('en-US', options);
   res.render('list', { kindOfDay: day });
 
 });
