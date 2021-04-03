@@ -10,11 +10,28 @@ app.get('/', (req, res) => {
 
   let today = new Date();
   let day = '';
+  let currentDay = today.getDay();
 
-  if (today.getDay() === 6 || today.getDay() === 0) {
-    day = 'Weekend HaHa!';
-  } else {
-    day = 'Weekday OhHa';
+  if (currentDay === 0) {
+    day = 'Sunday';
+  }
+  if (currentDay === 1) {
+    day = 'Monday';
+  }
+  if (currentDay === 2) {
+    day = 'Tuesday';
+  }
+  if (currentDay === 3) {
+    day = 'Wednesday';
+  }
+  if (currentDay === 4) {
+    day = 'Thursday';
+  }
+  if (currentDay === 5) {
+    day = 'Friday';
+  }
+  if (currentDay === 6) {
+    day = 'Saturday';
   }
 
   res.render('list', { kindOfDay: day });
