@@ -8,12 +8,12 @@ app.use(express.urlencoded( {extended: true} ));
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
-let inputItems = ['Food to buy', 'Things Want To Do', 'Thingd To Do'];
-let workItems = [];
+const inputItems = ['Food to buy', 'Things Want To Do', 'Thingd To Do'];
+const workItems = [];
 
 app.get('/', (req, res) => {
 
-  let day = date.getDate();
+  const day = date.getDate();
   res.render('list', { listTitle: day, newListItems: inputItems });
 
 });
@@ -30,7 +30,7 @@ app.get('/about', (req, res) => {
 
 app.post('/', (req, res) => {
   
-  let currentItem = req.body.newItem;
+  const currentItem = req.body.newItem;
   if (req.body.list === 'Work') {
     workItems.push(currentItem);
     res.redirect('/work');
