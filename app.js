@@ -5,8 +5,10 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded( {extended: true} ));
 app.set('view engine', 'ejs');
+app.use(express.static('public'));
 
 let inputItems = ['Food to buy', 'Things Want To Do', 'Thingd To Do'];
+let workItems = [];
 
 app.get('/', (req, res) => {
 
@@ -18,14 +20,26 @@ app.get('/', (req, res) => {
   }
 
   let day = today.toLocaleDateString('en-US', options);
-  res.render('list', { kindOfDay: day, newListItems: inputItems });
+  res.render('list', { listTitle: day, newListItems: inputItems });
 
+});
+
+app.get('/work', (req, res) => {
+
+  res.render('list', { listTitle: 'Work List', newListItems: workItems});
+  
 });
 
 app.post('/', (req, res) => {
   
-  inputItems.push(req.body.newItem);
-  res.redirect('/');
+  let currentItem = req.body.newItem;
+  if (req.body.list === 'Work') {
+    workItems.push(currentItem);
+    res.redirect('/work');
+  } else {
+    inputItems.push(currentItem);
+    res.redirect('/');
+  }
 
 });
 
