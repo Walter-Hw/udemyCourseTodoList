@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const _ = require('lodash');
+const { ID } = require('./config');
+const { KEY } = require('./config');
 
 const app = express();
 
@@ -9,7 +11,7 @@ app.use(express.urlencoded( {extended: true} ));
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
-mongoose.connect('mongodb://localhost:27017/todolistDB', { 
+mongoose.connect(`mongodb+srv://${ID}:${KEY}@todolist.zvnci.mongodb.net/todolistDB`, { 
   useNewUrlParser:true,
   useUnifiedTopology: true ,
   useFindAndModify: false
@@ -132,6 +134,6 @@ app.get('/:customListName', (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log('Listening port 3000 now---');
+app.listen(process.env.PORT || 3000, () => {
+  console.log(`Server has started on port ${process.env.PORT} successfully!`);
 });
