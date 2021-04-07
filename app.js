@@ -10,7 +10,8 @@ app.use(express.static('public'));
 
 mongoose.connect('mongodb://localhost:27017/todolistDB', { 
   useNewUrlParser:true,
-  useUnifiedTopology: true 
+  useUnifiedTopology: true ,
+  useFindAndModify: false
 });
 
 const itemsSchema = new mongoose.Schema({
@@ -85,15 +86,28 @@ app.post('/', (req, res) => {
 app.post('/delete', (req, res) => {
 
   const checkedItemID = req.body.checkbox;
+  const listName = req.body.listName;
 
-  Item.findByIdAndRemove(checkedItemID, (err) => {
-    if (err) {
-      console.log('Error ocurrs --->', err);
-    } else {
-      console.log('Deleted Successfully!');
-      res.redirect('/');
-    }
-  });
+  if (listName === 'Today') {
+
+    Item.findByIdAndRemove(checkedItemID, (err) => {
+      if (err) {
+        console.log('Error ocurrs --->', err);
+      } else {
+        console.log('Deleted Successfully!');
+        res.redirect('/');
+      }
+    });
+  } else {
+    List.findOneAndUpdate(
+      {name: listName}, 
+      {$pull: {items: {_id: checkedItemID}}}, 
+      (err,result) => {
+      if (!err) {
+        res.redirect('/' + listName);
+      }
+    });
+  }
 
 });
 
