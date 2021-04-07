@@ -30,16 +30,28 @@ const item3 = new Item({
 
 const defaultItems = [item1, item2, item3];
 
-Item.insertMany(defaultItems, (err) => {
-  if (err) {
-    console.log('There is en error occured --->', err);
-  } else {
-    console.log('Inserted To Database Successfully!');
-  }
-});
+
+
 
 app.get('/', (req, res) => {
-  res.render('list', { listTitle: 'Today', newListItems: defaultItems });
+
+  Item.find({}, (err, result) => {
+
+    if (result.length === 0) {
+      Item.insertMany(defaultItems, (err) => {
+        if (err) {
+          console.log('There is en error occured --->', err);
+        } else {
+          console.log('Inserted To Database Successfully!');
+        }
+      });
+      res.redirect('/');
+    } else {
+      res.render('list', { listTitle: 'Today', newListItems: result });
+    }
+
+  });
+
 });
 
 app.get('/work', (req, res) => {
@@ -51,14 +63,27 @@ app.get('/about', (req, res) => {
 })
 
 app.post('/', (req, res) => {
-  const currentItem = req.body.newItem;
-  if (req.body.list === 'Work') {
-    workItems.push(currentItem);
-    res.redirect('/work');
-  } else {
-    inputItems.push(currentItem);
-    res.redirect('/');
-  }
+
+  const itemName = req.body.newItem;
+  const item = new Item({
+    name: itemName
+  });
+
+  item.save();
+  res.redirect('/');
+});
+
+app.post('/delete', (req, res) => {
+  const checkedItemID = req.body.checkbox;
+
+  Item.findByIdAndRemove(checkedItemID, (err) => {
+    if (err) {
+      console.log('Error ocurrs', err);
+    } else {
+      console.log('Deleted Successfully!');
+    }
+  });
+
 });
 
 app.listen(3000, () => {
