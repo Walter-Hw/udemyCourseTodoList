@@ -30,8 +30,12 @@ const item3 = new Item({
 
 const defaultItems = [item1, item2, item3];
 
+const listSchema = mongoose.Schema({
+  name: String,
+  items: [itemsSchema]
+});
 
-
+const List = mongoose.model('List', listSchema);
 
 app.get('/', (req, res) => {
 
@@ -54,13 +58,7 @@ app.get('/', (req, res) => {
 
 });
 
-app.get('/work', (req, res) => {
-  res.render('list', { listTitle: 'Work List', newListItems: defaultItems});
-});
-
-app.get('/about', (req, res) => {
-  res.render('about');
-})
+app.get('/about', (req, res) => { res.render('about'); });
 
 app.post('/', (req, res) => {
 
@@ -71,19 +69,44 @@ app.post('/', (req, res) => {
 
   item.save();
   res.redirect('/');
+
 });
 
 app.post('/delete', (req, res) => {
+
   const checkedItemID = req.body.checkbox;
 
   Item.findByIdAndRemove(checkedItemID, (err) => {
     if (err) {
-      console.log('Error ocurrs', err);
+      console.log('Error ocurrs --->', err);
     } else {
       console.log('Deleted Successfully!');
+      res.redirect('/');
     }
   });
 
+});
+
+app.get('/:customListName', (req, res) => {
+
+  const customListName = req.params.customListName;
+
+  List.findOne({name: customListName}, (err, result) => {
+    if (!err) {
+      if (!result) {
+
+        const list = new List({
+          name: customListName,
+          items: defaultItems
+        })
+        // list.save();
+        // res.redirect('/' + customListName);
+        list.save(() => res.redirect('/' + customListName));
+      } else {
+        res.render('list', { listTitle: result.name, newListItems: result.items });
+      }
+    }
+  });
 });
 
 app.listen(3000, () => {
