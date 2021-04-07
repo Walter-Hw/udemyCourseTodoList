@@ -11,7 +11,7 @@ app.use(express.urlencoded( {extended: true} ));
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
-mongoose.connect(`mongodb+srv://${ID}:${KEY}@todolist.zvnci.mongodb.net/todolistDB`, { 
+mongoose.connect(`mongodb+srv://${ID}:${KEY}@cluster0.zvnci.mongodb.net/todolistDB`, { 
   useNewUrlParser:true,
   useUnifiedTopology: true ,
   useFindAndModify: false
